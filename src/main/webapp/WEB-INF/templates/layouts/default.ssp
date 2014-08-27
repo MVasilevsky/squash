@@ -1,0 +1,11 @@
+<%@ val title:String = "Squash" %>
+<%@ val body:String %>
+
+<html>
+    <head>
+        <title> Squash | <%= title %> </title>
+    </head>
+    <body>
+        <%= unescape(body) %>
+    </body>
+</html>
