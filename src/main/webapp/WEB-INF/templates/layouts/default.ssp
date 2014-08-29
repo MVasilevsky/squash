@@ -1,9 +1,10 @@
-<%@ val title:String = "Squash" %>
 <%@ val body:String %>
 
 <html>
     <head>
-        <title> Squash | <%= title %> </title>
+        <link rel="stylesheet" type="text/css" href="styles.css" />
+        <link rel="shortcut icon" href="favicon.ico">
+        <title>Squash</title>
     </head>
     <body>
         <%= unescape(body) %>

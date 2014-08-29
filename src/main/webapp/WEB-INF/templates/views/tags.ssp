@@ -1,12 +1,11 @@
 #import(mvas.squash.Tag)
 
-<%@ val title:String = "Tags" %>
 <%@ val tags: List[Tag] %>
 
 <ul>
 #for (tag <- tags)
-    <li><%= tag.name %> (id=<%= tag.id %>) <a href="/tags/remove/<%= tag.id %>">x</a></li>
+    <li><%= tag.name %> (id=<%= tag.id %>) <a href="/tag/remove/<%= tag.id %>">x</a></li>
 #end
 </ul>
 
-<a href="/tags/add">Add tag</a>
+<a href="/tag/add">Add tag</a>

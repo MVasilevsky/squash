@@ -1,0 +1,14 @@
+html {
+    background-size:cover;
+    background: url(mars.jpg) no-repeat fixed;
+}
+
+body {
+    width: 80%;
+    margin: auto;
+}
+
+.item {
+    float: left;
+    margin: 10px;
+}

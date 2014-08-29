@@ -2,13 +2,14 @@ package mvas.squash
 
 import mvas.squash.db.DatabaseSessionSupport
 import org.scalatra._
+import org.scalatra.servlet.{MultipartConfig, FileUploadSupport}
 import scalate.ScalateSupport
 import org.fusesource.scalate.{ TemplateEngine, Binding }
 import org.fusesource.scalate.layout.DefaultLayoutStrategy
 import javax.servlet.http.HttpServletRequest
 import collection.mutable
 
-trait SquashStack extends ScalatraServlet with ScalateSupport with DatabaseSessionSupport{
+trait SquashStack extends ScalatraServlet with ScalateSupport with DatabaseSessionSupport with FileUploadSupport {
 
   /* wire up the precompiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")
@@ -24,7 +25,8 @@ trait SquashStack extends ScalatraServlet with ScalateSupport with DatabaseSessi
   override protected def templateAttributes(implicit request: HttpServletRequest): mutable.Map[String, Any] = {
     super.templateAttributes ++ mutable.Map.empty // Add extra attributes here, they need bindings in the build file
   }
-  
+
+  configureMultipartHandling(MultipartConfig(maxFileSize = Some(3*1024*1024)))
 
   notFound {
     // remove content type in case it was set through an action

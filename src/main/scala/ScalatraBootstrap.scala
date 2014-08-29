@@ -3,6 +3,7 @@ import javax.servlet.ServletContext
 import mvas.squash._
 import mvas.squash.db.DatabaseInit
 import org.scalatra._
+import org.scalatra.servlet.MultipartConfig
 import org.squeryl.PrimitiveTypeMode._
 
 class ScalatraBootstrap extends LifeCycle with DatabaseInit {

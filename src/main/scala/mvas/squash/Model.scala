@@ -1,9 +1,9 @@
 package mvas.squash
 
-import java.sql.Timestamp
 import java.util.Date
 
 import org.squeryl.PrimitiveTypeMode._
+import org.squeryl.dsl.ManyToOne
 
 import org.squeryl.{Schema, KeyedEntity}
 
@@ -12,9 +12,8 @@ import org.squeryl.{Schema, KeyedEntity}
  */
 abstract class Model
 
-class BaseEntity extends KeyedEntity[Int] {
+class BaseEntity extends KeyedEntity[Int]{
   var id: Int = 0
-  var lastModified = new Timestamp(System.currentTimeMillis)
 }
 
 class User(val login: String, var pass: String) extends BaseEntity {
@@ -26,9 +25,15 @@ class User(val login: String, var pass: String) extends BaseEntity {
 
 }
 
-class Quote(val picture: String, val uploader: User, val date: Date, var rating: Double, var tags: List[Tag]) extends BaseEntity {
-  def this(id: Int, picture: String, uploader: User, date: Date, rating: Double, tags: List[Tag]) {
-    this(picture, uploader, date, rating, tags)
+class Quote(val picture: String, val date: Date, var marks: Set[Mark], val uploaderId: Int) extends BaseEntity {
+
+  lazy val uploader: ManyToOne[User] = Model.userToQuotes.right(this)
+  val rating = if (marks == null || marks.isEmpty) 0 else 1 //marks.map(_.points).sum / marks.size
+
+//  var tags: Set[Tag]
+
+  def this(id: Int, picture: String, date: Date, marks: Set[Mark], uploaderId: Int) {
+    this(picture, date, marks, uploaderId)
     this.id = id
   }
 }
@@ -52,6 +57,8 @@ object Model extends Schema {
   val quotes = table[Quote]
   val tags = table[Tag]
   val marks = table[Mark]
+
+  val userToQuotes = oneToManyRelation(users, quotes).via((u,q) => u.id === q.uploaderId)
 
   on(users)(u => declare(
     u.id is autoIncremented
@@ -77,6 +84,8 @@ object Model extends Schema {
     users.insert(new User(1, "mvas", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
     users.insert(new User(2, "dab", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
     users.insert(new User(3, "rsd", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
+
+    quotes.insert(new Quote(1, "pic", new Date(), Set(), 1))
   }
 
 }

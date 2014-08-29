@@ -1,0 +1,6 @@
+<h2>Create quote</h2>
+<form method="post" enctype="multipart/form-data" action="/quote/add">
+    <input type="file" name="image" />
+    <input type="">
+    <input type="submit" />
+</form>

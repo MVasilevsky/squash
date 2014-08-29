@@ -1,0 +1,15 @@
+#import(mvas.squash.Quote)
+
+<%@ val quotes: List[Quote] %>
+
+<a href="/quote/add">Add quote</a>
+
+<div class="container">
+    #for (quote <- quotes)
+        <div class="item">
+            <a href="/quote/<%= quote.id %>"> <img width="200px" src="/image/<%= quote.picture %>"/></a> <br>
+        </div>
+    #end
+</div>
+
+
