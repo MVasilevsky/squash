@@ -5,7 +5,7 @@
 
 <ul>
 #for (tag <- tags)
-    <li><%= tag.name %></li>
+    <li><%= tag.name %> (id=<%= tag.id %>) <a href="/tags/remove/<%= tag.id %>">x</a></li>
 #end
 </ul>
 

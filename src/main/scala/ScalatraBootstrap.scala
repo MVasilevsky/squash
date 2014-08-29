@@ -11,13 +11,9 @@ class ScalatraBootstrap extends LifeCycle with DatabaseInit {
     configureDb()
 
     transaction {
-      if (Model.findTablesFor(Model.quotes).isEmpty) {
-        Model.create
-        Model.createInitialData()
-        println("Created the schema")
-      } else {
-        println("Found the schema")
-      }
+      Model.create
+      Model.createInitialData()
+      println("Created the schema")
     }
 
     context.mount(new SquashServlet, "/*")

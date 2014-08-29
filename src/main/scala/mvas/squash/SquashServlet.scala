@@ -26,6 +26,11 @@ class SquashServlet extends SquashStack {
     redirect("tags")
   }
 
+  get("/tags/remove/:id") {
+    if (params("id") forall Character.isDigit) Model.tags.deleteWhere(tag => tag.id === params("id").toInt)
+    redirect("tags")
+  }
+
   //  tags
   get("/tags/?") {
     val tags = from(Model.tags)(m => select(m)).toList

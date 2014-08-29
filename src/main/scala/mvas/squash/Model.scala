@@ -13,17 +13,39 @@ import org.squeryl.{Schema, KeyedEntity}
 abstract class Model
 
 class BaseEntity extends KeyedEntity[Int] {
-  val id: Int = 0
+  var id: Int = 0
   var lastModified = new Timestamp(System.currentTimeMillis)
 }
 
-class User(val login: String, var pass: String) extends BaseEntity
+class User(val login: String, var pass: String) extends BaseEntity {
 
-class Quote(val picture: String, val uploader: User, val date: Date, var rating: Double, var tags: List[Tag]) extends BaseEntity
+  def this(id: Int, login: String, pass: String) = {
+    this(login, pass)
+    this.id = id
+  }
 
-class Tag(val name: String) extends BaseEntity
+}
 
-class Mark(val quote: Quote, val points: Int, val user: User, val date: Date) extends BaseEntity
+class Quote(val picture: String, val uploader: User, val date: Date, var rating: Double, var tags: List[Tag]) extends BaseEntity {
+  def this(id: Int, picture: String, uploader: User, date: Date, rating: Double, tags: List[Tag]) {
+    this(picture, uploader, date, rating, tags)
+    this.id = id
+  }
+}
+
+class Tag(val name: String) extends BaseEntity {
+  def this(id: Int, name:String) {
+    this(name)
+    this.id = id
+  }
+}
+
+class Mark(val quote: Quote, val points: Int, val user: User, val date: Date) extends BaseEntity {
+  def this(id: Int, quote: Quote, points: Int, user: User, date: Date) {
+    this(quote, points, user, date)
+    this.id = id
+  }
+}
 
 object Model extends Schema {
   val users = table[User]
@@ -48,9 +70,13 @@ object Model extends Schema {
   ))
 
   def createInitialData() {
-    users.insert(new User("mvas", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
-    users.insert(new User("dab", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
-    users.insert(new User("rsd", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
+    tags.insert(new Tag(1, "Groushee"))
+    tags.insert(new Tag(2, "Sleevy"))
+    tags.insert(new Tag(3, "Mini kolby"))
+
+    users.insert(new User(1, "mvas", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
+    users.insert(new User(2, "dab", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
+    users.insert(new User(3, "rsd", "e63807f81d6c4929d3692acc590f4ea30f9ab543c820c145648ef1c14477da51"))
   }
 
 }
