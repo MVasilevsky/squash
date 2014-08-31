@@ -2,14 +2,19 @@
 
 <%@ val quotes: List[Quote] %>
 
-<a href="/quote/add">Add quote</a>
+<h1 class="title">Quotes</h1>
+
+<div class="new">
+    <form method="post" enctype="multipart/form-data" action="/quotes/add">
+        <input type="file" name="image" />
+        <input type="submit" value="Добавить"/>
+    </form>
+</div>
 
 <div class="container">
     #for (quote <- quotes)
         <div class="item">
-            <a href="/quote/<%= quote.id %>"> <img width="200px" src="/image/<%= quote.picture %>"/></a> <br>
+            <span class="helper"></span> <a href="/quote/<%= quote.id %>"> <img width="200px" src="/image/<%= quote.picture %>"/></a> <br>
         </div>
     #end
 </div>
-
-

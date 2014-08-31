@@ -18,6 +18,8 @@ class ScalatraBootstrap extends LifeCycle with DatabaseInit {
     }
 
     context.mount(new SquashServlet, "/*")
+//    context.initParameters("org.scalatra.Port") = "443"
+//    context.initParameters("org.scalatra.ForceHttps") = "true"
   }
 
   override def destroy(context: ServletContext) {

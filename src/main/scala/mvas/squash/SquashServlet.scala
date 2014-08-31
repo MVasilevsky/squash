@@ -3,10 +3,8 @@ package mvas.squash
 import java.io.FileOutputStream
 import java.util.Date
 
-import org.scalatra.{BadRequest, Ok}
+import org.scalatra.Ok
 import org.squeryl.PrimitiveTypeMode._
-
-import scala.reflect.io.File
 
 class SquashServlet extends SquashStack {
 
@@ -17,63 +15,66 @@ class SquashServlet extends SquashStack {
     if (!ips.contains(request.getRemoteHost)) {
       halt(403, "Go away! Your address is " + request.getRemoteHost + " and not accepted")
     }
+    basicAuth()
   }
 
   get("/?") {
-    redirect("quote")
+    redirect("quotes")
   }
+
   // -------------- files --------------
   get("/image/:name") {
     response.setHeader("Content-Type", "image/png")
     Ok(new java.io.File("c:\\testdir\\" + params("name")))
   }
 
-  get("/simage/:name") {
-    response.setHeader("Content-Type", "image/png")
-    Ok(new java.io.File("c:\\testdir\\" + params("name")))
-  }
-
   // -------------- tags --------------
 
-  get("/tag/add/?") {
+  get("/tags/add/?") {
     ssp("addTag", "title" -> "Add tag")
   }
 
-  post("/tag/add/?") {
-    Model.tags.insert(new Tag(request.parameters.get("name").get))
-    redirect("tag")
+  post("/tags/add/?") {
+    val tag = request.parameters.get("name").get
+    Model.tags.insert(new Tag(tag))
+    tag
   }
 
-  get("/tag/remove/:id/?") {
+  get("/tags/remove/:id/?") {
     if (params("id") forall Character.isDigit) Model.tags.deleteWhere(tag => tag.id === params("id").toInt)
-    redirect("tag")
+    redirect("tags")
   }
 
-  get("/tag/?") {
+  get("/tags/?") {
     val tags = from(Model.tags)(t => select(t)).toList
     ssp("tags", "tags" -> tags)
   }
 
   // -------------- quotes --------------
 
-  get("/quote/?") {
+  get("/quotes/?") {
     val quotes = from(Model.quotes)(q => select(q)).toList
     ssp("quotes", "quotes" -> quotes)
   }
 
-  get("/quote/add/?") {
+  get("/quotes/add/?") {
     ssp("addQuote")
   }
 
-  post("/quote/add/?") {
+  post("/quotes/add/?") {
     val loaded = fileParams("image")
     val file = new java.io.File("c:\\testdir\\" + loaded.getName)
     val fos = new FileOutputStream(file)
     fos.write(loaded.get())
     fos.close()
 
-    Model.quotes.insert(new Quote(loaded.getName, new Date(), Set.empty, 1))
+    Model.quotes.insert(new Quote(loaded.getName, new Date(), Some(1)))
 
-    redirect("/quote")
+    redirect("/quotes")
+  }
+
+  get("/quote/:id") {
+    val quote = from(Model.quotes)(q => where(q.id === params("id").toInt) select(q)).single
+    ssp("quote", "quote" -> quote)
   }
 }

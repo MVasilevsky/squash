@@ -1,0 +1,15 @@
+#import(mvas.squash.Quote)
+
+<%@ val quote: Quote %>
+
+<img style="margin: 20px;" src="/image/<%= quote.picture %>"/>
+
+<br>
+
+<%= quote.uploader.single.login %>
+
+#if (quote.rating != 0)
+    <%= quote.rating %>
+#else
+    No marks
+#end

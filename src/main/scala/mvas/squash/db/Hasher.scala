@@ -7,11 +7,12 @@ import java.security.MessageDigest
  */
 object Hasher {
 
+  def byteArrayToHex(buf: Array[Byte]): String = buf.map("%02X" format _).mkString
+
   def hash(source: String) = {
     val md = MessageDigest.getInstance("SHA-256")
     md.update(source.getBytes("UTF-8"))
-    val digest = md.digest()
-    new String(digest)
+    byteArrayToHex(md.digest())
   }
 
 }
