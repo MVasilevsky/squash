@@ -94,6 +94,14 @@ object Model extends Schema {
     quotes.insert(new Quote("4.png", new Date(), Some(1)))
     quotes.insert(new Quote("5.png", new Date(), Some(1)))
     quotes.insert(new Quote("6.png", new Date(), Some(1)))
+
+    val quote1 = from(Model.quotes)(m => where(m.id === 1) select m).single
+    val quote2 = from(Model.quotes)(m => where(m.id === 5) select m).single
+
+    val tag = from(Model.tags)(t => where(t.name === "Mini kolby") select t).single
+
+    quote1.tags.associate(tag)
+    quote2.tags.associate(tag)
   }
 
 }

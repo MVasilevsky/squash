@@ -1,6 +1,5 @@
 package mvas.squash
 
-import mvas.squash.auth.AuthenticationSupport
 import mvas.squash.db.DatabaseSessionSupport
 import org.scalatra._
 import org.scalatra.servlet.{MultipartConfig, FileUploadSupport}
@@ -10,7 +9,7 @@ import org.fusesource.scalate.layout.DefaultLayoutStrategy
 import javax.servlet.http.HttpServletRequest
 import collection.mutable
 
-trait SquashStack extends ScalatraServlet with ScalateSupport with DatabaseSessionSupport with FileUploadSupport with AuthenticationSupport {
+trait SquashStack extends ScalatraServlet with ScalateSupport with DatabaseSessionSupport with FileUploadSupport {
 
   /* wire up the precompiled templates */
   override protected def defaultTemplatePath: List[String] = List("/WEB-INF/templates/views")

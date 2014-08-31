@@ -2,22 +2,24 @@
 
 <%@ val tags: List[Tag] %>
 
-<h1 class="title">Tags</h1>
+<h1 class="title">Теги</h1>
 
-<div class="new"> <input id="newtag" name="newtag"/> <button type="button" onclick="newTag();">Add tag</button> </div>
+<div class="new"> <input id="newtag" name="newtag"/> <button type="button" onclick="newTag();">Добавить</button> </div>
 
 <div id="tags" class="tags">
 #for (tag <- tags)
-    <a class="tag" href="/tag/<%= tag.name %>"> <%= tag.name %> </a>
+    <a class="tag" href="/quotes/category/<%= tag.name %>"> <%= tag.name %> </a> <a class="x" href="/tags/remove/<%= tag.name %>">x</a>
 #end
 </div>
 
 <script>
 
     function newTag() {
+    var newtag = document.getElementById('newtag').value;
+    if (newtag != "") {
     var http = new XMLHttpRequest();
     var url = "/tags/add";
-    var params = "name=" + document.getElementById('newtag').value;
+    var params = "name=" + newtag;
     http.open("POST", url, true);
 
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
@@ -25,13 +27,16 @@
     http.setRequestHeader("Connection", "close");
 
     http.onreadystatechange = function() {
-    if(http.readyState == 4 && http.status == 200) {
-    var div = document.getElementById('tags');
-    div.innerHTML = div.innerHTML + '<a class="tag" href="/tag/' + http.responseText + '">' + http.responseText + '</a>';
-    document.getElementById('newtag').value = '';
-    }
+        if(http.readyState == 4 && http.status == 200) {
+            if (http.responseText == "ok") {
+                var div = document.getElementById('tags');
+                div.innerHTML = div.innerHTML + '<a class="tag" href="/quotes/category/' + newtag + '">' + newtag + '</a>' + '<a class="x" href="/tags/remove/' + newtag + '">x</a>';
+                document.getElementById('newtag').value = '';
+            }
+        }
     };
     http.send(params);
+    }
     }
 
 </script>

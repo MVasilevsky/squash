@@ -1,20 +1,27 @@
 #import(mvas.squash.Quote)
 
+<%@ val category: String %>
 <%@ val quotes: List[Quote] %>
 
-<h1 class="title">Quotes</h1>
+<h1 class="title">Цитаты
+    #if (category != "")
+        с тегом <%= category %> <a style="margin-left: 30px; font-size: 60%; color: #e0eaf1;" href="/quotes/category/<%= category %>/rand">случайная</a>
+    #end
+</h1>
 
+#if (category == "")
 <div class="new">
     <form method="post" enctype="multipart/form-data" action="/quotes/add">
-        <input type="file" name="image" />
+        <input type="file" style="color: white;" name="image[]" multiple />
         <input type="submit" value="Добавить"/>
     </form>
 </div>
+#end
 
 <div class="container">
     #for (quote <- quotes)
         <div class="item">
-            <span class="helper"></span> <a href="/quote/<%= quote.id %>"> <img width="200px" src="/image/<%= quote.picture %>"/></a> <br>
+            <span class="helper"></span> <a href="/quote/<%= quote.id %>"> <img class="quote-img" src="/image/<%= quote.picture %>"/></a> <br>
         </div>
     #end
 </div>

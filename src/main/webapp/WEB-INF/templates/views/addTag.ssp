@@ -1,5 +1,0 @@
-<h2>New tag</h2>
-<form method="post" action="/tag/add">
-    <input id="name" name="name"/>
-    <input type="submit" value="Add" />
-</form>

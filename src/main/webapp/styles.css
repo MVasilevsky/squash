@@ -1,9 +1,11 @@
 html {
+    min-height: 100%;
     background-size: cover;
-    /*background: url(mars.jpg) no-repeat fixed;*/
+    background: url(/b.jpg) no-repeat fixed;
 }
 
 body {
+    min-height: 100%;
     width: 80%;
     margin: auto;
 }
@@ -13,11 +15,12 @@ img {
 }
 
 .menu {
-    float: left;
+    position: fixed;
+    /*float: left;*/
     width: 15%;
-    height: 25%;
+    min-height: 100%;
     background-color: #e0eaf1;
-    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px #e0eaf1;
 }
 
 .menu ul {
@@ -27,6 +30,7 @@ img {
 .content {
     float: left;
     width: 85%;
+    margin-left: 20%;
 }
 
 .container {
@@ -36,14 +40,36 @@ img {
     max-height: 250px;
 }
 
+.image-container {
+    display: inline-block;
+    margin: 20px;
+}
+
+.tags-and-marks {
+    margin-top: 15px;
+    font-size: 0.8em;
+    color: gray;
+}
+
 .item {
     float: left;
     max-height: 250px;
-    /*margin: 10px;*/
+}
+
+.quote-img {
+    width: 200px;
+    box-shadow: 0 0 2px white;
+}
+
+.quote-img-big {
+    max-width: 800px;
+    box-shadow: 0 0 4px white;
 }
 
 .title {
     margin-left: 30px;
+    color: #e0eaf1;
+    /*text-shadow: 0 0 1px #e0eaf1;*/
 }
 
 .new {
@@ -69,4 +95,23 @@ img {
     text-decoration: none;
     font-size: 90%;
     color: #3e6d8e;
+}
+
+.tag2 {
+    display: inline-block;
+    background-color: #e0eaf1;
+    border-bottom: 1px solid #b3cee1;
+    border-right: 1px solid #b3cee1;
+    padding: 3px;
+    margin-left: 2px;
+    margin-right: 2px;
+    text-decoration: none;
+    /*font-size: 20%;*/
+    color: #3e6d8e;
+}
+
+.x {
+    font-size: 0.75em;
+    text-decoration: none;
+    color: #e0eaf1;
 }

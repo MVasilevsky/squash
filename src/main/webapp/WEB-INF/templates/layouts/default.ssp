@@ -1,22 +1,24 @@
 <%@ val body:String %>
 
 <html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="/styles.css" />
-        <link rel="shortcut icon" href="/favicon.ico">
-        <title>Squash</title>
-    </head>
-    <body>
-        <div class="menu">
-            <h1 style="margin: 30px;">Squash</h1>
-            <ul class="menu-list">
-                <li><a href="/quotes">Quotes</a></li>
-                <li><a href="/tags">Tags</a></li>
-            </ul>
-        </div>
-        <div class="content">
-            <%= unescape(body) %>
-        </div>
+<head>
+<link rel="stylesheet" type="text/css" href="/styles.css" />
+<link rel="shortcut icon" href="/favicon.ico">
+    <title>Squash</title>
+</head>
+<body>
+    <div class="menu">
+    <h1 style="margin: 30px;">Squash</h1>
+    <ul class="menu-list">
+        <li><a href="/quotes">Цитаты</a></li>
+        <li><a href="/tags">Теги</a></li>
+        <li></li>
+        <li><a href="/logout">Выход</a></li>
+    </ul>
+    </div>
+    <div class="content">
+    <%= unescape(body) %>
+    </div>
 
-    </body>
+</body>
 </html>

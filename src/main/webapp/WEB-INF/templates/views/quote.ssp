@@ -1,15 +1,116 @@
 #import(mvas.squash.Quote)
 
 <%@ val quote: Quote %>
+<%@ val cat: Boolean %>
 
-<img style="margin: 20px;" src="/image/<%= quote.picture %>"/>
+<h1 class="title">#<%= quote.id %></h1>
 
+<div class="image-container">
+
+<img class="quote-img-big" src="/image/<%= quote.picture %>"/>
 <br>
 
-<%= quote.uploader.single.login %>
+    <div class="tags-and-marks" id="tags-list" style="float: left; margin-left: 15px;">
+    <div style="display: inline-block;" id="tagss">
+        #if (!quote.tags.isEmpty)
+            #for (tag <- quote.tags)
+                <a class="tag2" href="/quotes/category/<%= tag.name %>"> <%= tag.name %> </a>
+            #end
+        #end
+    </div>
+    <a href="#" onclick="opentags();" id="editTags" style="padding: 3px; color: #e0eaf1;">теги</a>
+    <a href="#" onclick="hideTags();" id="done" style="padding: 3px; color: #e0eaf1; visibility: hidden;">готово</a>
+    </div>
 
-#if (quote.rating != 0)
-    <%= quote.rating %>
-#else
-    No marks
-#end
+
+    <div class="tags-and-marks" id="rating" style="float: right; margin-right: 15px;">
+    #if (quote.rating != 0)
+        <%= quote.rating %>
+    #else
+        Нет оценок
+    #end
+    </div>
+
+</div>
+<br>
+
+<div id="tags" style="margin-left: 20px; max-width: 600px; display: none;"></div>
+
+<script>
+    function opentags() {
+    var http = new XMLHttpRequest();
+    var url = "/tags/all";
+    http.open("GET", url, true);
+
+    http.onreadystatechange = function() {
+    if(http.readyState == XMLHttpRequest.DONE && http.status == 200) {
+    var div = document.getElementById('tags');
+    var response = http.responseText;
+    var tags = response.split(",,");
+    div.innerHTML = "";
+    for (var i = 0; i < tags.length; i++) {
+    div.innerHTML = div.innerHTML + '<a class="tag" id="' + tags[i] + '" onclick="addtag(this);" href="#">' + tags[i] + '</a>';
+    }
+    div.style.display = 'inline-block';
+    document.getElementById('done').style.visibility = 'visible';
+    document.getElementById('editTags').style.display = 'none';
+    }
+    };
+    http.send();
+    }
+
+
+    function addtag(tagElem) {
+    var tag = tagElem.innerHTML;
+    var http = new XMLHttpRequest();
+    var url = "/quotes/addTag";
+    var params = "quote=" + <%= quote.id %> + "&tag=" + tag;
+    http.open("POST", url, true);
+
+    http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    http.setRequestHeader("Content-length", params.length.toString());
+    http.setRequestHeader("Connection", "close");
+
+    http.onreadystatechange = function() {
+    if(http.readyState == XMLHttpRequest.DONE && http.status == 200) {
+    var div = document.getElementById('tagss');
+    var response = http.responseText;
+    if (response === "ok") {
+    div.innerHTML = div.innerHTML + '<a class="tag2" href="/quotes/category/' + tag + '" >' + tag + '</a>';
+    }
+    }
+    };
+    http.send(params);
+    }
+
+    function hideTags() {
+    document.getElementById('done').style.visibility = 'hidden';
+    document.getElementById('tags').style.display = 'none';
+    document.getElementById('editTags').style.display = 'inline-block';
+    }
+
+    document.onkeydown = checkKey;
+
+    #if(!cat)
+        function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode == '39' || e.keyCode == '40') {
+        window.location.href = "<%= quote.id + 1 %>"
+        }
+        else if (e.keyCode == '37' || e.keyCode == '38') {
+        window.location.href = "<%= if (quote.id == 1) { 1 } else {quote.id - 1} %>"
+        }
+        }
+    #else
+        function checkKey(e) {
+
+        e = e || window.event;
+
+        if (e.keyCode >= '37' && e.keyCode <= '40') {
+        window.location.reload()
+        }
+        }
+    #end
+</script>
