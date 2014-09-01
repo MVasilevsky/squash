@@ -14,11 +14,11 @@
     <div style="display: inline-block;" id="tagss">
         #if (!quote.tags.isEmpty)
             #for (tag <- quote.tags)
-                <a class="tag2" href="/quotes/category/<%= tag.name %>"> <%= tag.name %> </a>
+                <a class="tag2" id="<%= tag.name %>l" href="/quotes/category/<%= tag.name %>"> <%= tag.name %> </a>  <a class="x" id="<%= tag.name %>x" style="display: none;" href="#" onclick="removeTag('/quotes/removeTag/<%= quote.id %>/<%= tag.name %>')">x</a>
             #end
         #end
     </div>
-    <a href="#" onclick="opentags();" id="editTags" style="padding: 3px; color: #e0eaf1;">теги</a>
+    <a href="#" onclick="opentags();" id="editTags" style="padding: 3px; color: #e0eaf1;">редактировать теги</a>
     <a href="#" onclick="hideTags();" id="done" style="padding: 3px; color: #e0eaf1; visibility: hidden;">готово</a>
     </div>
 
@@ -37,6 +37,18 @@
 <div id="tags" style="margin-left: 20px; max-width: 600px; display: none;"></div>
 
 <script>
+
+    Element.prototype.remove = function() {
+    this.parentElement.removeChild(this);
+    }
+    NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
+    for(var i = 0, len = this.length; i < len; i++) {
+    if(this[i] && this[i].parentElement) {
+    this[i].parentElement.removeChild(this[i]);
+    }
+    }
+    }
+
     function opentags() {
     var http = new XMLHttpRequest();
     var url = "/tags/all";
@@ -52,6 +64,10 @@
     div.innerHTML = div.innerHTML + '<a class="tag" id="' + tags[i] + '" onclick="addtag(this);" href="#">' + tags[i] + '</a>';
     }
     div.style.display = 'inline-block';
+    var elems = document.getElementsByClassName("x");
+    for (var x = 0; x < elems.length; x++) {
+        elems[x].style.display = 'inline';
+    }
     document.getElementById('done').style.visibility = 'visible';
     document.getElementById('editTags').style.display = 'none';
     }
@@ -68,15 +84,16 @@
     http.open("POST", url, true);
 
     http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-    http.setRequestHeader("Content-length", params.length.toString());
-    http.setRequestHeader("Connection", "close");
 
     http.onreadystatechange = function() {
     if(http.readyState == XMLHttpRequest.DONE && http.status == 200) {
     var div = document.getElementById('tagss');
     var response = http.responseText;
     if (response === "ok") {
-    div.innerHTML = div.innerHTML + '<a class="tag2" href="/quotes/category/' + tag + '" >' + tag + '</a>';
+    div.innerHTML = div.innerHTML + '<a class="tag2" id="' + tag + 'l" href="/quotes/category/' + tag + '" >' + tag + '</a>';
+    var string = "/quotes/removeTag/<%= quote.id %>/" + tag;
+    var id = tag + "x";
+    div.innerHTML = div.innerHTML + '<a class="x" id="' + id + '" style="display: inline;" href="#" onclick="removeTag(\'' + string + '\')">x</a>'
     }
     }
     };
@@ -87,6 +104,23 @@
     document.getElementById('done').style.visibility = 'hidden';
     document.getElementById('tags').style.display = 'none';
     document.getElementById('editTags').style.display = 'inline-block';
+    var elems = document.getElementsByClassName("x");
+    for (var x = 0; x < elems.length; x++) {
+        elems[x].style.display = 'none';
+    }
+    }
+
+    function removeTag(url) {
+    var http = new XMLHttpRequest();
+    http.open("GET", url, true);
+
+    http.onreadystatechange = function() {
+    if(http.readyState == XMLHttpRequest.DONE && http.status == 200) {
+        document.getElementById(http.responseText + "l").remove();
+        document.getElementById(http.responseText + "x").remove();
+    }
+    };
+    http.send();
     }
 
     document.onkeydown = checkKey;

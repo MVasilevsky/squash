@@ -11,7 +11,8 @@ import scala.util.Random
 
 class SquashServlet extends SquashStack {
 
-  val ips = List("127.0.0.1", "0:0:0:0:0:0:0:1")
+  val ips = List("127.0.0.1", "0:0:0:0:0:0:0:1", "192.168.118.76", "192.168.118.77", "192.168.118.78")
+  val path = "u:\\squash\\img\\"
 
   before() {
     contentType = "text/html"
@@ -61,7 +62,7 @@ class SquashServlet extends SquashStack {
   // -------------- files --------------
   get("/image/:name") {
     response.setHeader("Content-Type", "image/png")
-    Ok(new java.io.File("c:\\testdir\\" + params("name")))
+    Ok(new java.io.File(path + params("name")))
   }
 
   // -------------- tags --------------
@@ -89,12 +90,12 @@ class SquashServlet extends SquashStack {
   }
 
   get("/tags/?") {
-    val tags = from(Model.tags)(t => select(t)).toList
+    val tags = from(Model.tags)(t => select(t)).toList.sortWith(_.name.toLowerCase < _.name.toLowerCase)
     ssp("tags", "tags" -> tags)
   }
 
   get("/tags/all") {
-    from(Model.tags)(t => select(t)).toList.map(_.name).mkString(",,")
+    from(Model.tags)(t => select(t)).toList.sortWith(_.name.toLowerCase < _.name.toLowerCase).map(_.name).mkString(",,")
   }
 
   // -------------- quotes --------------
@@ -121,7 +122,7 @@ class SquashServlet extends SquashStack {
 
   post("/quotes/add/?") {
     for (loaded <- fileMultiParams("image")) {
-      val file = new java.io.File("c:\\testdir\\" + loaded.getName)
+      val file = new java.io.File(path + loaded.getName)
       val fos = new FileOutputStream(file)
       fos.write(loaded.get())
       fos.close()
@@ -129,6 +130,15 @@ class SquashServlet extends SquashStack {
       Model.quotes.insert(new Quote(loaded.getName, new Date(), Some(1)))
     }
     redirect("/quotes")
+  }
+
+  get("/quotes/removeTag/:q/:t/?") {
+    val quoteId = params("q").toInt
+    val tagName = params("t")
+    val quote = from(Model.quotes)(m => where(m.id === quoteId) select m).single
+    val tag = from(Model.tags)(t => where(t.name === tagName) select t).single
+    quote.tags.dissociate(tag)
+    tagName
   }
 
   post("/quotes/addTag") {
